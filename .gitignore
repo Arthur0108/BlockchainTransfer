@@ -1,0 +1,22 @@
+# Виртуальное окружение Python
+.venv/
+venv/
+
+# Скомпилированные файлы Solidity
+build/
+
+# Локальные файлы Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Логи и временные файлы
+*.log
+*.tmp
+
+# Файлы PyCharm
+.idea/
+
+# Локальные конфигурационные файлы
+contract_address.txt

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chain of Good</title>
+</head>
+<body>
+    <h1>Благотворительная платформа</h1>
+    <input type="text" id="amount" placeholder="Сумма в ETH">
+    <input type="text" id="account" placeholder="Ваш адрес">
+    <button onclick="donate()">Пожертвовать</button>
+    <p>Всего собрано: <span id="total">0</span> ETH</p>
+
+    <script>
+        async function donate() {
+            const amount = document.getElementById("amount").value;
+            const account = document.getElementById("account").value;
+
+            const response = await fetch("http://127.0.0.1:5000/donate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount, account })
+            });
+            const data = await response.json();
+            alert("Транзакция отправлена: " + data.tx_hash);
+            updateTotal();
+        }
+
+        async function updateTotal() {
+            const response = await fetch("http://127.0.0.1:5000/total");
+            const data = await response.json();
+            document.getElementById("total").innerText = data.total;
+        }
+
+        updateTotal(); // Обновить сумму при загрузке
+    </script>
+</body>
+</html>
