@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation DApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Donation DApp</h1>
+    <p>Total Donations: <span id="total-donations">0</span> wei</p>
+    <input type="number" id="donation-amount" placeholder="Amount in ETH (e.g., 0.001)" step="0.001">
+    <button onclick="donate()">Donate</button>
+    <p id="status"></p>
+
+    <script>
+        let web3;
+        let contract;
+        const contractAddress = "0x5F8104484271D97D35cD392800D8f58f080371E4"; // Адрес контракта
+
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    console.log("MetaMask connected");
+
+                    // Загружаем ABI через маршрут /get_abi
+                    $.getJSON('/get_abi', function(contractABI) {
+                        // Создаём объект контракта после загрузки ABI
+                        contract = new web3.eth.Contract(contractABI, contractAddress);
+                        console.log("Contract initialized");
+                        updateTotalDonations();
+                    }).fail(function() {
+                        alert("Failed to load contract ABI. Make sure the file exists and the server is running.");
+                    });
+                } catch (error) {
+                    console.error("User denied account access", error);
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        async function updateTotalDonations() {
+            $.get('/get_donations', function(data) {
+                if (data.success) {
+                    $('#total-donations').text(data.total);
+                } else {
+                    console.error("Error fetching donations:", data.error);
+                }
+            });
+        }
+
+        async function donate() {
+            const amountEth = $('#donation-amount').val();
+            if (!amountEth || amountEth <= 0) {
+                alert("Please enter a valid amount in ETH");
+                return;
+            }
+
+            // Конвертируем ETH в wei
+            const amountWei = web3.utils.toWei(amountEth.toString(), 'ether');
+            console.log(`Amount in wei: ${amountWei}`);
+
+            const accounts = await web3.eth.getAccounts();
+
+            try {
+                await contract.methods.donate().send({
+                    from: accounts[0],
+                    value: amountWei
+                });
+                $('#status').text("Donation successful!");
+                updateTotalDonations();
+            } catch (error) {
+                $('#status').text("Error: " + error.message);
+            }
+        }
+
+        $(document).ready(function() {
+            initWeb3();
+        });
+    </script>
+</body>
+</html>
