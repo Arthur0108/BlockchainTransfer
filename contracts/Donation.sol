@@ -2,7 +2,7 @@
 pragma solidity 0.8.29;
 
 contract Donation {
-    address public owner; // Владелец контракта (ты)
+    address public owner; // Владелец контракта
     uint public totalDonations; // Общая сумма пожертвований
     mapping(address => uint) public donations; // Кто сколько пожертвовал
 
