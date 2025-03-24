@@ -29,7 +29,7 @@ w3 = Web3(Web3.HTTPProvider(infura_url))
 print("Подключение к Sepolia:", w3.is_connected())
 assert w3.is_connected(), "Не удалось подключиться к Sepolia"
 
-# Аккаунт для развертывания (твой кошелёк MetaMask)
+# Аккаунт для развертывания (мой кошелёк MetaMask)
 account = "0xBaAc487e59a9d3D98e2C932dBfB20f4d4672b2fоE"  # полный адрес моего кошелька MetaMask
 private_key = os.getenv("PRIVATE_KEY")  # приватный ключ из MetaMask
 print(f"Используемый аккаунт: {account}")
