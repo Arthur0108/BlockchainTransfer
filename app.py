@@ -4,7 +4,7 @@ import json
 import os
 from dotenv import load_dotenv
 
-# Загружаем переменные из .env
+# Загружаем переменные из файла .env
 load_dotenv()
 
 app = Flask(__name__)
